@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关系人格原型测试 · 8种会爱人的人格</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%239D6B7E'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F6F1EE'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F6F1EE;
+  --ink:#38302F;
+  --rose:#9D6B7E;
+  --rose-deep:#7E4F61;
+  --sage:#7E9477;
+  --card:#FFFFFF;
+  --blush:#F0E4E1;
+  --muted:#8A7C82;
+  --line:#E7DDD8;
+  --shadow:0 10px 30px rgba(86,60,70,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+#app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;display:flex;flex-direction:column;}
+.view{display:none;flex:1;flex-direction:column;padding:28px 24px 40px;animation:fade .45s ease;}
+.view.active{display:flex;}
+@keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){.view{animation:none;}}
+
+/* 封面 */
+.cover-mark{width:64px;height:64px;border-radius:50%;background:var(--rose);display:flex;align-items:center;justify-content:center;margin:26px auto 22px;}
+.cover-mark svg{width:32px;height:32px;}
+.eyebrow{text-align:center;color:var(--rose);font-size:13px;letter-spacing:3px;margin-bottom:14px;}
+h1{font-size:30px;line-height:1.35;text-align:center;font-weight:700;letter-spacing:.5px;}
+.cover-sub{text-align:center;color:var(--muted);font-size:15px;margin-top:18px;}
+.cover-meta{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:30px;box-shadow:var(--shadow);}
+.cover-meta li{list-style:none;display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:#5c5055;padding:7px 0;}
+.cover-meta li svg{width:18px;height:18px;flex:0 0 18px;margin-top:3px;color:var(--rose);}
+.btn{display:block;width:100%;border:none;cursor:pointer;font-family:inherit;font-size:16.5px;font-weight:600;
+  border-radius:999px;padding:16px;text-align:center;transition:transform .15s,background .2s;min-height:52px;}
+.btn-primary{background:var(--rose);color:#fff;margin-top:26px;}
+.btn-primary:active{background:var(--rose-deep);transform:scale(.98);}
+.btn-ghost{background:transparent;color:var(--rose);border:1.5px solid var(--rose);margin-top:14px;}
+.btn-ghost:active{background:var(--blush);}
+.cover-foot{text-align:center;font-size:12px;color:var(--muted);margin-top:22px;}
+
+/* 答题 */
+.quiz-head{display:flex;align-items:center;gap:14px;}
+.progress-track{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--rose);border-radius:99px;transition:width .35s ease;}
+.progress-num{font-size:13px;color:var(--muted);white-space:nowrap;}
+.q-stage{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.q-text{font-size:21px;font-weight:600;line-height:1.55;margin:8px 0 30px;}
+.opt{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);
+  border-radius:16px;padding:16px 18px;margin-bottom:13px;cursor:pointer;font-size:16px;min-height:54px;transition:border .2s,background .2s;}
+.opt:active{border-color:var(--rose);background:var(--blush);}
+.opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:0 0 20px;}
+.opt:active .dot{border-color:var(--rose);}
+.q-back{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;font-family:inherit;padding:6px;align-self:flex-start;min-height:36px;}
+.q-hint{text-align:center;color:var(--sage);font-size:14px;margin-top:10px;}
+
+/* 加载 */
+.loading{flex:1;align-items:center;justify-content:center;text-align:center;gap:8px;}
+.ring{width:54px;height:54px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--rose);
+  animation:spin 1s linear infinite;margin-bottom:22px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading p{color:var(--muted);font-size:15px;}
+
+/* 结果 */
+.avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;object-position:center top;
+  border:4px solid var(--card);box-shadow:0 8px 22px rgba(86,60,70,.18);display:block;margin:0 auto 18px;}
+.result-badge{display:inline-block;align-self:center;background:var(--blush);color:var(--rose-deep);
+  font-size:13px;letter-spacing:2px;padding:6px 16px;border-radius:999px;margin-bottom:18px;}
+.result-title{font-size:26px;font-weight:700;text-align:center;line-height:1.4;}
+.result-oneline{text-align:center;color:var(--muted);font-size:15px;margin-top:14px;}
+.keywords{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px;}
+.keyword{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:14px;color:#5c5055;}
+.quote{background:var(--rose);color:#fff;border-radius:18px;padding:22px 24px;margin-top:26px;font-size:16.5px;line-height:1.7;text-align:center;box-shadow:var(--shadow);}
+.poster{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 22px;margin-top:26px;box-shadow:var(--shadow);}
+.poster .p-mark{width:40px;height:40px;border-radius:50%;background:var(--rose);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;}
+.poster .p-mark svg{width:20px;height:20px;}
+.poster h3{font-size:19px;text-align:center;line-height:1.5;}
+.poster .p-kw{text-align:center;color:var(--muted);font-size:13px;margin-top:10px;}
+.poster .p-q{text-align:center;font-size:14.5px;color:var(--rose-deep);margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
+.poster .p-brand{text-align:center;font-size:12px;color:var(--muted);margin-top:16px;letter-spacing:1px;}
+
+/* 付费墙 */
+.pay-head{text-align:center;font-size:22px;font-weight:700;margin:6px 0 6px;}
+.pay-sub{text-align:center;color:var(--muted);font-size:14.5px;margin-bottom:22px;}
+.pay-list{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px 20px;box-shadow:var(--shadow);}
+.pay-list li{list-style:none;padding:13px 0;font-size:15px;display:flex;gap:12px;border-bottom:1px solid var(--line);}
+.pay-list li:last-child{border-bottom:none;}
+.pay-list li svg{width:19px;height:19px;flex:0 0 19px;color:var(--sage);margin-top:3px;}
+
+/* 深度报告 */
+.report-block{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:18px;box-shadow:var(--shadow);}
+.report-block h4{font-size:16px;color:var(--rose-deep);margin-bottom:10px;display:flex;align-items:center;gap:9px;}
+.report-block h4 svg{width:18px;height:18px;}
+.report-block p{font-size:14.5px;color:#4d4348;}
+.report-block .fit{padding:9px 0;border-bottom:1px dashed var(--line);font-size:14.5px;}
+.report-block .fit:last-child{border-bottom:none;}
+.report-block .fit b{color:var(--rose-deep);}
+.disclaimer{font-size:12px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.7;}
+.report-view{align-items:center;}
+.report-view > *{min-width:0;}
+.report-view > .result-title,
+.report-view > .report-block,
+.report-view > .disclaimer,
+.report-view > .btn{width:100%;margin-left:auto;margin-right:auto;}
+
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(40,30,35,.45);display:none;align-items:center;justify-content:center;padding:28px;z-index:50;}
+.modal-mask.show{display:flex;}
+.modal{background:var(--card);border-radius:20px;padding:26px 22px;max-width:380px;width:100%;}
+.modal h3{font-size:18px;text-align:center;margin-bottom:12px;}
+.modal p{font-size:14px;color:#5c5055;margin-bottom:10px;}
+.modal code{background:var(--blush);padding:2px 6px;border-radius:6px;font-size:13px;}
+.code-input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px;font-size:15px;font-family:inherit;margin:12px 0;min-height:48px;}
+.code-input:focus{outline:none;border-color:var(--rose);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="modal-mask" id="modalMask">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script>
+/* ============ 28题数据（顺序已打乱，dim维度，rev反向） ============ */
+const QUESTIONS=[
+ {t:"忙了一整天，我更想约人见面聊聊，而不是一个人待着。",dim:"d1",rev:false},
+ {t:"别人一句无心的话，我可能会在心里反复琢磨很久。",dim:"d2",rev:false},
+ {t:"我希望自己在最好的朋友心里，是最特别的那一个。",dim:"d3",rev:false},
+ {t:"和人产生矛盾后，我会尽快当面把话说清楚。",dim:"d4",rev:false},
+ {t:"一场热闹的社交之后，我常需要一个人安静很久才能恢复精力。",dim:"d1",rev:true},
+ {t:"看电影、听故事或听到某首歌，我很容易被情绪带进去。",dim:"d2",rev:false},
+ {t:"当好朋友和别人走得很近时，我会有点失落、觉得自己多余。",dim:"d3",rev:false},
+ {t:"我觉得有误会就该直接沟通，憋着只会让事情更糟。",dim:"d4",rev:false},
+ {t:"我常常是主动组局、把朋友聚到一起的那个人。",dim:"d1",rev:false},
+ {t:"我能敏锐察觉到身边人语气或表情的细微变化。",dim:"d2",rev:false},
+ {t:"我很在意自己是不是对方“最好的朋友”，而不只是朋友之一。",dim:"d3",rev:false},
+ {t:"吵架或冷战时，我愿意先开口打破僵局。",dim:"d4",rev:false},
+ {t:"压力大时，我的身体会先有反应（失眠、胃口变化、心慌等）。",dim:"d2",rev:false},
+ {t:"遇到开心的事，我第一反应是马上分享给别人。",dim:"d1",rev:false},
+ {t:"我会记住和某个人之间专属的小秘密、小习惯，并觉得那很珍贵。",dim:"d3",rev:false},
+ {t:"我能比较平静地当面表达自己的不满。",dim:"d4",rev:false},
+ {t:"长时间没人说话，我会觉得有点闷、有点空。",dim:"d1",rev:false},
+ {t:"被批评或否定后，我需要比较长时间才能平复。",dim:"d2",rev:false},
+ {t:"如果我把一个人放在第一位，也希望自己在他心里是同样的位置。",dim:"d3",rev:false},
+ {t:"关系出了问题，我会主动想办法解决，而不是等它自己过去。",dim:"d4",rev:false},
+ {t:"到了新环境，我能比较快地和周围人熟络起来。",dim:"d1",rev:false},
+ {t:"即使发生不小的事，我也倾向于先吃饭、先睡觉，第二天再说。",dim:"d2",rev:true},
+ {t:"我能接受好朋友同时有好几个和我一样亲密的朋友。",dim:"d3",rev:true},
+ {t:"闹别扭时，我习惯先沉默或疏远，等对方先主动。",dim:"d4",rev:true},
+ {t:"周末没有安排、可以独自待着，对我来说是种享受。",dim:"d1",rev:true},
+ {t:"别人的负面评价很少能真正影响我太久。",dim:"d2",rev:true},
+ {t:"朋友有了新圈子，我会真心为他高兴，而不是觉得被取代。",dim:"d3",rev:true},
+ {t:"我会把不舒服的事记在心里，攒到某个时刻才一起爆发。",dim:"d4",rev:true}
+];
+
+const OPTIONS=["完全不像我","有点不像我","中立","有点像我","完全就是我"];
+
+/* ============ 8型数据（占位，随后填充） ============ */
+const TYPES=[
+{
+ name:"厉娜·活在当下的真心人",
+ ref:"原型参考：厉娜",
+ img:"assets/lina.jpg",
+ vec:[30,16,29,29],
+ oneline:"你是人群里最有“活人感”的那一个，世界在你眼里是具体的——一顿好饭、一个拥抱、一句直给的话。",
+ keywords:["活在当下","爱憎分明","钝感松弛"],
+ quote:"天大的事先吃饭，爱恨我都要全份，半份不要。",
+ trait:"你现实、感官敏锐、动手能力强，情绪来得快、表达直接，爱就掏心掏肺、不设防，不爱也不假装。不端着、不玩猜心，对朋友的好都是行动派。",
+ pattern:"你是安全型偏回避的相处者。信任时全然投入，一旦确认被辜负，会干脆收回、不拖泥带水，也很少翻旧账。",
+ shadow:"钝感是铠甲也是盲区——别人声泪俱下时你可能真的“没接住”，容易被误会成冷漠；不擅长长远规划和理性反击，受伤后容易原地打转，有时靠“恨”撑过一段日子。",
+ growth:"保留你的真，同时给情绪装一个慢半拍的开关，在重要的人剖白时，先回应感受、再处理事情。",
+ fit:["<b>最合拍：</b>温和稳定、会照顾氛围的类型，能和你一起把日子过得热气腾腾。","<b>需磨合：</b>高敏感、需要被反复确认的类型，你要多给一点语言上的回应。","<b>易碰撞：</b>习惯翻旧账、要“唯一”的执念型，会觉得你太粗线条。"]
+},
+{
+ name:"许飞·画地为牢的深情者",
+ ref:"原型参考：许飞",
+ img:"assets/xufei.jpg",
+ vec:[17,30,29,16],
+ oneline:"别人早翻篇了，你还站在原地，把一段关系反复回味、反复审判。",
+ keywords:["深情长情","反刍内耗","理想主义"],
+ quote:"我画地为牢，把最软的地方，留给了最在乎的人。",
+ trait:"你的内在世界丰富而较真，价值观纯粹、情感浓度高，长情、念旧、忠诚，会把重要的人珍藏很久。",
+ pattern:"你是焦虑型依恋，渴望“被坚定选择”，对关系里的细微降温高度警觉，容易把一次拒绝解读成“我是不是不配”。",
+ shadow:"反刍式内耗是你最大的课题——你既是原告又是被告，自己写宣判书、自己画牢、钥匙在自己手里，却蹲在里面哭。深情常以拧巴、说反话、不会好好开口的方式出现，让对方读不到你的在乎。",
+ growth:"你需要的往往不是答案，而是一个听众；把心里排演了无数遍的话直接说出口，并练习区分“我感受到的”和“事实”。",
+ fit:["<b>最合拍：</b>能稳稳接住你情绪、主动给确定性的类型，是你的港湾。","<b>需磨合：</b>同样高敏感的人，需要有人先打破沉默。","<b>易碰撞：</b>强边界、习惯退场的回避型，会让你觉得被丢下。"]
+},
+{
+ name:"张萌·发光发热的引领者",
+ ref:"原型参考：张萌",
+ img:"assets/zhangmeng.jpg",
+ vec:[30,24,28,28],
+ oneline:"你是天生的小太阳和组织者，会主动把人聚起来，也会在别人低落时第一个发现。",
+ keywords:["热情主动","共情引领","高浓度付出"],
+ quote:"我把最好的都留给你，只是希望你知道，你一直被放在心上。",
+ trait:"你感染力强、有责任感、善于协调和激励，是关系里主动伸手、主动破冰的那一个，也愿意为重要的人默默做很多、记很久。",
+ pattern:"你是安全型偏焦虑。你表达爱的方式是“把最好的先给你”，并期待这份心意被看见、被回应。",
+ shadow:"“浓人”的边界风险——付出越多，越容易把“被拒绝”解读成“被背叛”，情绪上头时会用关系施压，也容易在照顾别人时忽略自己。",
+ growth:"把“我给的”和“对方此刻需要的”分开，允许别人拒绝你的好意，而不否定你的爱。",
+ fit:["<b>最合拍：</b>独立、有边界感的类型，能和你互相成就。","<b>需磨合：</b>两个高浓度的人，容易互相透支。","<b>易碰撞：</b>回避型会觉得你的热情太满、想退一步。"]
+},
+{
+ name:"马天宇·外柔内刚的边界守护者",
+ ref:"原型参考：马天宇",
+ img:"assets/matianyu.jpg",
+ vec:[16,29,23,17],
+ oneline:"你温和礼貌、会照顾全场，却很少有人真正走进你的内心，你的暖是“筛选过的”。",
+ keywords:["外柔内刚","强边界","独处充电"],
+ quote:"我待人温和，但走进我，需要一张我亲自发的通行证。",
+ trait:"你洞察力深、价值观坚定，外表圆融、内核极有原则。热闹常常是你撑出来的保护壳，独处才让你恢复能量。",
+ pattern:"你是回避型依恋。边界感极强，拒绝人情捆绑，把“拒绝”视为权利；亲密需要大量空间，一旦感到被绑架，会用最干脆的方式退场。",
+ shadow:"回避带来的孤独——密友很少，情绪低谷时可能翻遍通讯录无人可说，习惯用“我不需要”掩饰“我怕失去”，偶尔陷入虚无。",
+ growth:"边界不必拆除，但可以留一扇窗；让一两个安全的人，看见你盔甲里的柔软。",
+ fit:["<b>最合拍：</b>热情但不黏人的类型，能慢慢融化你。","<b>需磨合：</b>同样回避的人，容易各自沉默到失联。","<b>易碰撞：</b>要“唯一”、反复确认的类型，会让你想逃。"]
+},
+{
+ name:"文吉儿·守着“唯一”的执念者",
+ ref:"原型参考：文吉儿",
+ img:"assets/wenjier.jpg",
+ vec:[18,29,31,16],
+ oneline:"你安静细致、默默付出，却把每一笔心意、每个细节都记得清清楚楚，你守卫的是“不可替代的位置”。",
+ keywords:["专一忠诚","排他占有","记忆账本"],
+ quote:"我可以一直对你好，但我要确认，我在你心里无可替代。",
+ trait:"你忠诚、尽责、记忆力惊人，重视稳定和承诺，会制造只属于两个人的“专属密码”，并把它看得很珍贵。",
+ pattern:"你是焦虑型依恋。你期待“我是你的唯一”，会用长期付出兑换特殊位置；一旦发现自己只是“之一”，失衡感会慢慢累积。",
+ shadow:"记账式被动攻击——平时不说，攒到临界点会用翻旧账、当面对峙的方式爆发，反而把对方推远；容易把“事情”和“情感义务”混在一起，让对方难以自证。",
+ growth:"及时、直接地表达需求，而不是等对方来猜；把“我期待的”提前说清楚，好过事后翻账。",
+ fit:["<b>最合拍：</b>高回馈、会表达感谢的类型，能给你想要的确定感。","<b>需磨合：</b>回避型会让你的“要确认”撞上他的“想逃”。","<b>易碰撞：</b>开放、朋友很多的类型，会让你觉得被取代。"]
+},
+{
+ name:"王子璇·温柔而有底线的清醒者",
+ ref:"原型参考：王子璇",
+ img:"assets/wangzixuan.jpg",
+ vec:[28,23,17,28],
+ oneline:"你待人周到、会照顾气氛，骨子里却有不容模糊的骄傲和公道——温柔，但不软弱。",
+ keywords:["温柔有底线","体面","及时止损"],
+ quote:"我可以温柔，但我也要一份明明白白的尊重。",
+ trait:"你宜人性高、重和谐、务实讲体面，愿意迁就和照顾别人，同时有清晰的底线。",
+ pattern:"你是安全型。冲突面前你会先反省、先无措，但一旦确认关系不值得，能体面地及时止损，不纠缠。",
+ shadow:"年轻时容易好面子，被“我是否值钱”的标尺绑架，边界感模糊，可能在人情和利益之间分不清，被强势质问时容易一时语塞、吃哑巴亏。",
+ growth:"给善良配上明确的边界，练习当场为自己说话，不必事后才反应过来。",
+ fit:["<b>最合拍：</b>稳定、有担当的类型，相处舒服又安心。","<b>需磨合：</b>让你不断内耗、习惯翻旧账的人。","<b>易碰撞：</b>强势、爱push的类型，会让你觉得被冒犯。"]
+},
+{
+ name:"青稚·又强又软的目标驱动者",
+ ref:"原型参考：青稚",
+ img:"assets/qingzhi.jpg",
+ vec:[29,24,24,27],
+ oneline:"你是天生的“大C位”，目标清晰、自律好胜，坚硬外壳下却藏着一个会偷偷哭的自己。",
+ keywords:["目标驱动","自律好胜","又强又软"],
+ quote:"我习惯了赢，可在你面前，我愿意先低头。",
+ trait:"你效率高、决断力强、有长期方向，习惯推动事情和身边人往前走；对在乎的人有高期待，也愿意为重要的人放下身段、主动道歉。",
+ pattern:"你是安全型偏焦虑。你会“恨铁不成钢”地push，但面子大过天的你，反而会主动求和。",
+ shadow:"钝于体察情绪——你以为的“为你好、催你努力”，对方可能感受成长期压力甚至否定；常没意识到自己的强势已经伤人，直到对方离开才崩溃。",
+ growth:"在“对事严格”之外，补一句“对你这个人的认可”，先确认感受、再谈标准。",
+ fit:["<b>最合拍：</b>能并肩、又能给你情绪反馈的类型。","<b>需磨合：</b>高敏感、怕被否定的人，你要收着点锋芒。","<b>易碰撞：</b>松弛、不爱被催的类型，会觉得你太紧。"]
+},
+{
+ name:"白小纯·嘴硬心软的洒脱刺猬",
+ ref:"原型参考：白小纯",
+ img:"assets/baixiaochun.jpg",
+ vec:[24,29,23,17],
+ oneline:"你看起来跳脱随性、万事不上心，其实洒脱只留给过客，真正放进心里的人能得到你最双标的偏爱。",
+ keywords:["嘴硬心软","高敏感","洒脱外壳"],
+ quote:"我说最狠的话，是因为我怕先说在乎的那个人会输。",
+ trait:"你活在当下、反应快、敢拼敢闯，有自己的节奏，其实非常在意别人的反馈。",
+ pattern:"你是恐惧型（焦虑+回避）。你渴望亲密又怕受伤，习惯先用狠话和推开试探对方——“我刺到你，但你要记得来哄我”；身体很诚实，嘴上拒绝，行动上默默把好东西都留给对方。",
+ shadow:"高敏感加应激爆发——长期被误解、被边缘化时，会用攻击性表达委屈，容易被当成“难搞”；狠话先抛完，态度才悄悄软下来，常常因此错过想留的人。",
+ growth:"把“我需要你”直接说出口，不必总用反话包装；信任一个人时，给他一个不用猜的信号。",
+ fit:["<b>最合拍：</b>能看穿你嘴硬、主动给台阶的类型，最治愈你。","<b>需磨合：</b>同样嘴硬的人，容易陷入谁都不先低头的僵局。","<b>易碰撞：</b>强势爱push的类型，会让你竖起全部的刺。"]
+}
+];
+
+/* ============ 状态 ============ */
+const state={view:"cover",answers:[],current:0,result:null,unlocked:false};
+const $app=document.getElementById("app");
+const $mask=document.getElementById("modalMask");
+const $box=document.getElementById("modalBox");
+
+const iconHeart='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>';
+const iconCheck='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const iconStar='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l3 6.9 7.5.7-5.6 5 1.6 7.4L12 18.3 5.5 22l1.6-7.4-5.6-5 7.5-.7z"/></svg>';
+
+/* ============ 计分与匹配 ============ */
+function computeScores(){
+  const dims={d1:[],d2:[],d3:[],d4:[]};
+  QUESTIONS.forEach((q,i)=>{
+    let v=state.answers[i];
+    if(q.rev)v=6-v;
+    dims[q.dim].push(v);
+  });
+  const score={};
+  Object.keys(dims).forEach(k=>{score[k]=dims[k].reduce((a,b)=>a+b,0);});
+  return score;
+}
+function matchType(score){
+  const userVec=[score.d1,score.d2,score.d3,score.d4];
+  let best=null,bestD=Infinity,second=null;
+  TYPES.forEach(tp=>{
+    let d=0;for(let i=0;i<4;i++)d+=Math.pow(userVec[i]-tp.vec[i],2);
+    d=Math.sqrt(d);
+    if(d<bestD){second=best;best=tp;bestD=d;}
+    else if(!second||d<second.d){second={tp,d};}
+  });
+  return {best,second:second?second.tp:null};
+}
+
+/* ============ 渲染 ============ */
+function render(){
+  let html="";
+  if(state.view==="cover")html=viewCover();
+  else if(state.view==="quiz")html=viewQuiz();
+  else if(state.view==="loading")html=viewLoading();
+  else if(state.view==="result")html=viewResult();
+  else if(state.view==="pay")html=viewPay();
+  else if(state.view==="report")html=viewReport();
+  $app.innerHTML=html;
+  window.scrollTo(0,0);
+}
+function viewCover(){
+  return '<div class="view active">'
+  +'<div class="cover-mark">'+iconHeart+'</div>'
+  +'<div class="eyebrow">关系人格原型</div>'
+  +'<h1>成年人走散的真相：<br>这 8 种关系人格<br>第 3 种最让人心疼</h1>'
+  +'<p class="cover-sub">看清你在友情、爱情等所有亲密关系里<br>那个反复出现的自己</p>'
+  +'<ul class="cover-meta">'
+  +'<li>'+iconCheck+'<span>28道情境题，凭直觉作答，约5分钟</span></li>'
+  +'<li>'+iconCheck+'<span>基于依恋理论、高敏感与大五人格框架</span></li>'
+  +'<li>'+iconCheck+'<span>答案无好坏，只有更懂自己的你</span></li>'
+  +'</ul>'
+  +'<button class="btn btn-primary" onclick="startQuiz()">开始测试</button>'
+  +'<p class="cover-foot">作答仅用于生成你的结果，不做诊断，不构成医疗建议</p>'
+  +'</div>';
+}
+function viewQuiz(){
+  const i=state.current,q=QUESTIONS[i];
+  const pct=Math.round((i)/QUESTIONS.length*100);
+  let opts=OPTIONS.map((label,idx)=>'<div class="opt" onclick="answer('+(idx+1)+')"><span class="dot"></span><span>'+label+'</span></div>').join("");
+  let back=i>0?'<button class="q-back" onclick="prevQ()">‹ 上一题</button>':'';
+  let hint=(i===14)?'<p class="q-hint">已经一半啦，真实的你正在浮现</p>':'';
+  return '<div class="view active">'
+  +'<div class="quiz-head"><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
+  +'<span class="progress-num">第'+(i+1)+'/'+QUESTIONS.length+'题</span></div>'
+  +'<div class="q-stage">'+back+'<p class="q-text">'+q.t+'</p>'+opts+hint+'</div>'
+  +'</div>';
+}
+function viewLoading(){
+  return '<div class="view active loading"><div class="ring"></div><p>正在生成你的关系人格…</p></div>';
+}
+function viewResult(){
+  const tp=state.result.best;
+  let kw=tp.keywords.map(k=>'<span class="keyword">'+k+'</span>').join("");
+  return '<div class="view active">'
+  +'<img class="avatar" src="'+tp.img+'" alt="'+tp.ref+'">'
+  +'<span class="result-badge">你的关系人格</span>'
+  +'<h2 class="result-title">'+tp.name+'</h2>'
+  +'<p class="result-oneline">'+tp.oneline+'</p>'
+  +'<div class="keywords">'+kw+'</div>'
+  +'<div class="quote">“'+tp.quote+'”</div>'
+  +'<div class="poster"><div class="p-mark">'+iconStar+'</div><h3>'+tp.name+'</h3>'
+  +'<p class="p-kw">'+tp.keywords.join(' · ')+'</p>'
+  +'<p class="p-q">“'+tp.quote+'”</p>'
+  +'<p class="p-brand">关系人格原型测试</p></div>'
+  +'<button class="btn btn-primary" onclick="goPay()">解锁完整的我</button>'
+  +'<button class="btn btn-ghost" onclick="restart()">重新测一次</button>'
+  +'</div>';
+}
+function viewPay(){
+  const list=PAY_POINTS.map(p=>'<li>'+iconCheck+'<span>'+p+'</span></li>').join("");
+  return '<div class="view active">'
+  +'<h2 class="pay-head">你的完整关系人格<br>藏在这3个盲区里</h2>'
+  +'<p class="pay-sub">你已经看到了表面的自己，完整版会告诉你</p>'
+  +'<ul class="pay-list">'+list+'</ul>'
+  +'<button class="btn btn-primary" onclick="unlock()">解锁完整报告</button>'
+  +'<button class="btn btn-ghost" onclick="state.view=\'result\';render()">返回结果</button>'
+  +'</div>';
+}
+function viewReport(){
+  const tp=state.result.best;
+  let blocks='';
+  blocks+=block('核心特质',tp.trait);
+  blocks+=block('关系行为模式',tp.pattern);
+  blocks+=block('阴影面与情绪盲区',tp.shadow);
+  blocks+=block('成长建议',tp.growth);
+  let fits=tp.fit.map(f=>'<div class="fit">'+f+'</div>').join("");
+  return '<div class="view active report-view">'
+  +'<img class="avatar" src="'+tp.img+'" alt="'+tp.ref+'">'
+  +'<span class="result-badge">完整报告</span>'
+  +'<h2 class="result-title">'+tp.name+'</h2>'
+  +blocks
+  +'<div class="report-block"><h4>'+iconStar+'关系适配</h4>'+fits+'</div>'
+  +'<p class="disclaimer">本测试为自我探索工具，基于依恋理论、高敏感与大五人格等框架，非心理诊断，不构成医疗建议。</p>'
+  +'<button class="btn btn-ghost" onclick="restart()">重新测一次</button>'
+  +'</div>';
+}
+function block(title,content){
+  return '<div class="report-block"><h4>'+iconStar+title+'</h4><p>'+content+'</p></div>';
+}
+
+/* ============ 事件 ============ */
+function startQuiz(){state.answers=[];state.current=0;state.view="quiz";render();}
+function answer(v){
+  state.answers[state.current]=v;
+  if(state.current<QUESTIONS.length-1){state.current++;render();}
+  else{state.view="loading";render();setTimeout(()=>{
+    const score=computeScores();
+    state.result=matchType(score);
+    state.view="result";render();
+  },2200);}
+}
+function prevQ(){if(state.current>0){state.current--;render();}}
+function restart(){state.view="cover";state.answers=[];state.current=0;state.unlocked=false;render();}
+function goPay(){state.view="pay";render();}
+function unlock(){
+  $box.innerHTML='<h3>输入兑换码解锁</h3>'
+  +'<p style="text-align:center;">完成购买后，将获得的兑换码输入下方，即可查看完整报告。</p>'
+  +'<input class="code-input" id="codeInput" placeholder="请输入兑换码" autocomplete="off">'
+  +'<button class="btn btn-primary" onclick="submitCode()">提交并解锁</button>';
+  $mask.classList.add("show");
+  setTimeout(function(){var el=document.getElementById("codeInput");if(el)el.focus();},80);
+}
+function submitCode(){
+  const input=document.getElementById("codeInput");
+  const val=(input.value||"").trim().toUpperCase();
+  if(val==="LOVE2026"){closeModal();state.unlocked=true;state.view="report";render();}
+  else{
+    input.style.borderColor="#c0566b";
+    let tip=document.getElementById("codeErr");
+    if(!tip){
+      tip=document.createElement("p");
+      tip.id="codeErr";
+      tip.style.cssText="color:#c0566b;font-size:13px;margin:2px 0 0;text-align:center;";
+      input.parentNode.insertBefore(tip,input.nextSibling);
+    }
+    tip.textContent="兑换码无效，请核对后重新输入";
+    input.focus();
+  }
+}
+function closeModal(){$mask.classList.remove("show");}
+$mask.addEventListener("click",e=>{if(e.target===$mask){closeModal();}});
+
+const PAY_POINTS=[
+  "你在亲密关系里反复踩的那个坑，是怎么形成的",
+  "你和哪种人最合拍、和哪种人注定互相消耗（8型配对图鉴）",
+  "压力状态下你的隐藏人格，以及3条能立刻用上的成长建议"
+];
+
+render();
+</script>
+</body>
+</html>
